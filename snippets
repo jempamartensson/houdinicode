@@ -1,0 +1,21 @@
+
+###FIND INSIDE OR OUSIDE BASED ON NORMAL###
+
+vector uv;
+int prim;
+
+float dist = xyzdist(1,@P,prim,uv);
+
+vector pos = primuv(1,"P",prim,uv);
+
+vector N = primuv(1,"N",prim,uv);
+
+vector closest = pos -@P;
+
+float dot = dot(normalize(closest),normalize(N));
+
+
+
+if(dot >= 0){
+    removepoint(0,@ptnum);
+    }

@@ -19,3 +19,19 @@ float dot = dot(normalize(closest),normalize(N));
 if(dot >= 0){
     removepoint(0,@ptnum);
     }
+    
+###########################################################
+Find point on line
+vector P = point(0,"P",0);
+vector A = point(1,"P",1);
+vector B = point(1,"P",0);
+
+
+vector AP = P - A;       //Vector from A to P   
+vector AB = B - A;       //Vector from A to B  
+
+float magnitudeAB = length(AB);     //Magnitude of AB vector (it's length squared)     
+float ABAPproduct = dot(AP,normalize(AB));    //The DOT product of a_to_p and a_to_b     
+float distance = ABAPproduct / magnitudeAB; //The normalized "distance" from a to your closest point  
+
+@P =  A + (AB * distance);

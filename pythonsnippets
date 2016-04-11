@@ -1,0 +1,44 @@
+##Select geo in viewport, and isolate by attribute
+
+import toolutils
+input = hou.ui.readInput("Attribute Name",("Blast","Split","Group",))
+attribute_name = input[1]
+
+
+viewer = toolutils.sceneViewer()
+selection = viewer.selectGeometry(prompt='Select parts of geometry that you want to sort out',geometry_types = [hou.geometryType.Primitives])
+
+node = selection.nodes()[-1]
+pr_patt = selection.selectionStrings(False)[-1]
+geo = node.geometry()
+
+attrlist = []
+
+for pr in geo.globPrims(pr_patt):
+    attrlist.append(pr.attribValue(attribute_name))
+
+    
+unique_attribute_val = list(set(attrlist))
+uattrlist = []
+
+for val in unique_attribute_val:
+    name=  "@"+attribute_name+"="+str(val)+" "
+    ##print name
+    uattrlist.append(name)
+    
+
+parmstring = ''.join(uattrlist)
+
+if input[0] == 0:
+    sort = node.createOutputNode("blast")
+    sort.parm("negate").set(1)
+    sort.parm("group").set(parmstring)
+elif input[0] == 1:
+    sort = node.createOutputNode("split")
+    sort.parm("negate").set(0)
+    sort.parm("group").set(parmstring)
+else:
+    sort = node.createOutputNode("group")
+    sort.parm("crname").set("sort")
+    sort.parm("grpequal").set("sort")
+    sort.parm("grp1").set(parmstring)

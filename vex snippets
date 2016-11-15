@@ -35,3 +35,51 @@ float ABAPproduct = dot(AP,normalize(AB));    //The DOT product of a_to_p and a_
 float distance = ABAPproduct / magnitudeAB; //The normalized "distance" from a to your closest point  
 
 @P =  A + (AB * distance);
+
+#############################################################
+Tesla
+#############################################################
+int num = 1;
+float radius = 200.0;
+int handle = pcopen(1,"P",@P,radius,num);
+i@id = @ptnum;
+i@parent= 1;
+i@line =0;
+while(pciterate(handle)){
+    int steps = 8;
+    int prim = addprim(0,"polyline");
+    float jitter =3;
+    float seed = 0.12345;
+
+    vector pos =@P;
+    vector pcpos;
+    pcimport(handle,"P",pcpos);
+    vector dir = pcpos - pos;
+    seed *= float(rand(pcpos));
+
+    float len = length(dir);
+    int point = addpoint(0,pos);
+    addvertex(0,prim,@ptnum);
+    for(int i = 0;i < steps;i++){
+        pos += dir/steps;
+        pos += (vector(rand( @ptnum + seed )) - 0.5) * jitter;
+        int pt = addpoint(geoself(),@ptnum);
+        setpointattrib(geoself(),"P",pt,pos);
+        setpointattrib(geoself(),"line",pt,1);
+        if(i ==7){
+            @group_Roots =1;
+            setpointattrib(geoself(),"P",pt,pcpos);
+        }
+        if(i == 0){
+            @group_Roots =1;
+        }
+    addvertex(geoself(),prim,pt);
+    seed += $PI;
+    }
+
+}
+
+
+######################################################################
+
+
